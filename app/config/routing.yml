@@ -3,5 +3,5 @@ authbucketoauth2bundle:
     resource:   "@AuthBucketOAuth2Bundle/Resources/config/routing.yml"
 
 app:
-    prefix: /
-    resource:   "@AppBundle/Resources/config/routing.yml"
+    resource: "@AppBundle/Controller/"
+    type:     annotation

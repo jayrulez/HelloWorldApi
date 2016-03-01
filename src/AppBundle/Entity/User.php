@@ -13,6 +13,8 @@ namespace AppBundle\Entity;
 
 use AuthBucket\OAuth2\Model\ModelInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -20,6 +22,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * @ORM\Table(name="authbucket_oauth2_user")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
+ *
+ * @UniqueEntity(fields={"username"}, errorPath="username", message="The username is already in use.")
  */
 class User implements ModelInterface, UserInterface
 {
@@ -35,7 +39,15 @@ class User implements ModelInterface, UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=255)
+     * @ORM\Column(name="username", type="string", length=32, unique=true)
+     *
+     * @Assert\NotBlank(message="Username is required.")
+     * @Assert\Length(
+     *      min=3, 
+     *      max=15, 
+     *      minMessage="Username must be at least {{ limit }} characters long.",
+     *      maxMessage="Username can be at most {{ limit }} characters long."
+     * )
      */
     protected $username;
 
@@ -43,6 +55,12 @@ class User implements ModelInterface, UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
+     *
+     * @Assert\NotBlank(message="Password is required.")
+     * @Assert\Length(
+     *      min=6,
+     *      minMessage="Password must be at least {{ limit }} characters long."
+     * )
      */
     protected $password;
 

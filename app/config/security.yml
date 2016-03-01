@@ -1,38 +1,16 @@
 security:
     encoders:
         AppBundle\Entity\User:    plaintext
-        Symfony\Component\Security\Core\User\User:                      plaintext
 
     providers:
         default:
             entity:                 { class: AppBundle:User }
 
-        admin:
-            memory:
-                users:
-                    admin:          { roles: 'ROLE_ADMIN', password: secrete }
-
     firewalls:
-        admin:
-            pattern:                ^/admin
-            http_basic:             ~
-            provider:               admin
-
-        app_login:
-            pattern:                ^/login$
-            anonymous:              ~
-
-        app_authorize:
-            pattern:                ^/authorize
-            remember_me:
-                secret:             "%kernel.secret%"
-            form_login:
-                login_path:         /login
-                check_path:         /authorize/login_check
-            logout:
-                path:               /authorize/logout
-                target:             /
-            provider:               default
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
 
         api_oauth2_authorize:
             pattern:                ^/api/oauth2/authorize$
@@ -47,35 +25,15 @@ security:
             pattern:                ^/api/oauth2/debug$
             oauth2_resource:        ~
 
+        api_auth:
+            pattern:                ^/api/auth
+            oauth2_token:        ~
+
+        api_resource:
+            pattern:                ^/api/resource
+            oauth2_resource:        ~
+
         api_resource_model:
             pattern:                ^/api/resource/model$
             oauth2_resource:
                 resource_type:      model
-                scope:              [ demoscope1 ]
-
-        api_resource_debug_endpoint:
-            pattern:                ^/api/resource/debug_endpoint$
-            oauth2_resource:
-                resource_type:      debug_endpoint
-                scope:              [ demoscope1 ]
-                options:
-                    debug_endpoint: '/api/oauth2/debug'
-                    cache:          false
-
-        api_resource_debug_endpoint_cache:
-            pattern:                ^/api/resource/debug_endpoint/cache$
-            oauth2_resource:
-                resource_type:      debug_endpoint
-                scope:              [ demoscope1 ]
-                options:
-                    debug_endpoint: '/api/oauth2/debug'
-                    cache:          true
-
-        api_resource_debug_endpoint_invalid_options:
-            pattern:                ^/api/resource/debug_endpoint/invalid_options$
-            oauth2_resource:
-                resource_type:      debug_endpoint
-                scope:              [ demoscope1 ]
-                options:
-                    debug_endpoint: ''
-                    cache:          true
