@@ -1,31 +1,27 @@
 <?php
 
 /**
- * This file is part of the authbucket/oauth2-symfony-bundle package.
+ * Copyright (C) Senit Financial Services Inc - All rights Reserved
+ * Written by Senit Financial Services Inc (www.senit.com)
  *
- * (c) Wong Hoi Sing Edison <hswong3i@pantarei-design.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This file is part of the Senit Money Transfer platform
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited without express permission from Senit Financial Services
  */
 
 namespace AppBundle\Entity;
 
-use AuthBucket\OAuth2\Model\ModelInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * User.
- *
- * @ORM\Table(name="authbucket_oauth2_user")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
- *
+ * @ORM\Table(name="users")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity(fields={"username"}, errorPath="username", message="The username is already in use.")
  */
-class User implements ModelInterface, UserInterface
+class User implements UserInterface
 {
     /**
      * @var int
@@ -35,7 +31,6 @@ class User implements ModelInterface, UserInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
     /**
      * @var string
      *
@@ -50,7 +45,6 @@ class User implements ModelInterface, UserInterface
      * )
      */
     protected $username;
-
     /**
      * @var string
      *
@@ -65,20 +59,43 @@ class User implements ModelInterface, UserInterface
     protected $password;
 
     /**
-     * @var array
+     * @var string
      *
-     * @ORM\Column(name="roles", type="array")
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    protected $roles;
+    protected $createdAt;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
+
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 
     /**
@@ -95,69 +112,32 @@ class User implements ModelInterface, UserInterface
         return $this;
     }
 
-    /**
-     * Get username.
-     *
-     * @return string
-     */
     public function getUsername()
     {
         return $this->username;
     }
 
     /**
-     * Set password.
+     * Set createdAt
      *
-     * @param string $password
+     * @param \DateTime $createdAt
      *
      * @return User
      */
-    public function setPassword($password)
+    public function setCreatedAt($createdAt)
     {
-        $this->password = $password;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get password.
+     * Get createdAt
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getPassword()
+    public function getCreatedAt()
     {
-        return $this->password;
-    }
-
-    /**
-     * Set roles.
-     *
-     * @param array $roles
-     *
-     * @return User
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * Get roles.
-     *
-     * @return array
-     */
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    public function getSalt()
-    {
-    }
-
-    public function eraseCredentials()
-    {
+        return $this->createdAt;
     }
 }

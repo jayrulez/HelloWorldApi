@@ -4,36 +4,35 @@ security:
 
     providers:
         default:
-            entity:                 { class: AppBundle:User }
-
+            id: user_provider
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        api_oauth2_authorize:
-            pattern:                ^/api/oauth2/authorize$
-            http_basic:             ~
-            provider:               default
+        oauth_token:
+            pattern:    ^/oauth/v2/token
+            security:   false
 
-        api_oauth2_token:
-            pattern:                ^/api/oauth2/token$
-            oauth2_token:           ~
+        oauth_authorize:
+            pattern:    ^/oauth/v2/auth
+            fos_oauth:  true
+            stateless:  true
+            anonymous:  true
 
-        api_oauth2_debug:
-            pattern:                ^/api/oauth2/debug$
-            oauth2_resource:        ~
+        api_register:
+            pattern: ^/api/register
+            fos_oauth: true
+            stateless: true
+            anonymous:  false
 
-        api_auth:
-            pattern:                ^/api/auth
-            oauth2_token:        ~
+        api:
+            pattern:    ^/api
+            fos_oauth:  true
+            stateless:  true
+            anonymous:  false # can be omitted as its default value
 
-        api_resource:
-            pattern:                ^/api/resource
-            oauth2_resource:        ~
-
-        api_resource_model:
-            pattern:                ^/api/resource/model$
-            oauth2_resource:
-                resource_type:      model
+    access_control:
+        - { path: ^/api/register, roles: [ IS_AUTHENTICATED_ANONYMOUSLY ] }
+        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }

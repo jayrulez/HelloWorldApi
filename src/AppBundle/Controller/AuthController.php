@@ -7,25 +7,27 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use AppBundle\Entity\User;
 
 class AuthController extends Controller
 {
     /**
-     * @Route("/api/auth/register", name="api_auth_register")
+     * @Route("/api/register", name="api_register")
      * @Method({"POST"})
      */
     public function registerAction(Request $request)
     {
     	$em = $this->getDoctrine()->getManager();
 
-    	$user = $em->getRepository('AppBundle:User')->createUser();
+    	$user = new User();
 
     	$username = $request->request->get('username');
     	$password = $request->request->get('password');
 
-    	$user->setUsername($username)
+    	$user
+    		->setUsername($username)
     		->setPassword($password)
-    		->setRoles(['ROLE_USER']);
+    		->setCreatedAt(new \DateTime('now'));
 
     	$errors = $this->get('validator')->validate($user);
 
